@@ -1,85 +1,84 @@
-# Practice I - From Pixels to the Integral: Area Under a Curve
+# Práctica I - De los píxeles a la integral: Área bajo la curva
 
-**Course:** ST0244 - Programming Languages Programming  
-**University:** EAFIT University  
-**Lecturer:** Alexander Narváez Berrío  
+Clase ST0244 - Lenguajes de Programación
+Universidad: Universidad EAFIT
+Profesor: Alexander Narváez Berrío
 
-## Team members
+## Integrantes del equipo
 
-- Replace with member 1
-- Replace with member 2
-- Replace with member 3
-- Replace with member 4
+* Sebastian Cardenas Cadavid
+* Derek Chica Velasquez
+
 
 ---
 
-## Objective
+## Objetivo
 
-The same mathematical problem is implemented using two programming paradigms:
+El mismo problema matemático se implementa utilizando dos paradigmas de programación:
 
-1. **Functional programming with Haskell**
-2. **Logic programming with Prolog**
+1. Programación funcional con Haskell
+2. Programación lógica con Prolog
 
-The input is a binary image in **PBM P4** format. Each column is interpreted as a discrete function value:
+La entrada es una imagen binaria en formato PBM P4. Cada columna se interpreta como el valor de una función discreta:
 
 ```text
-f(x) = number of consecutive black pixels from the bottom of column x
+f(x) = número de píxeles negros consecutivos desde la parte inferior de la columna x
 ```
 
-The complete height structure is:
+La estructura completa de alturas es:
 
 ```text
 M = [f(0), f(1), ..., f(width - 1)]
 ```
 
-Because:
+Como:
 
 ```text
-Δx = 1 pixel
+Δx = 1 píxel
 ```
 
-the Riemann sum becomes:
+la suma de Riemann se convierte en:
 
 ```text
-Area = Σ f(x) = sum(M)
+Área = Σ f(x) = sum(M)
 ```
 
 ---
 
-# Input file
+# Archivo de entrada
 
-The project reads directly:
+El proyecto lee directamente el archivo:
 
 ```text
 curva_binaria_P4.pbm
 ```
 
-The supplied image has dimensions:
+La imagen proporcionada tiene dimensiones:
 
 ```text
-567 × 319 pixels
+567 × 319 píxeles
 ```
 
-Since PBM **P4** is a binary format, each byte contains up to eight pixels. The programs determine the pixel value `(x, y)` by:
+Como PBM P4 es un formato binario, cada byte contiene hasta ocho píxeles. Los programas determinan el valor de un píxel `(x, y)` mediante:
 
-1. Calculating the byte containing the pixel.
-2. Determining the bit position.
-3. Extracting that bit using bit operations.
+1. El cálculo del byte que contiene el píxel.
+2. La determinación de la posición del bit.
+3. La extracción de ese bit utilizando operaciones binarias.
 
-For P4:
+En el formato P4:
 
 ```text
-1 = black
-0 = white
+1 = negro
+0 = blanco
 ```
 
-The number of bytes per row is:
+El número de bytes por fila se calcula como:
 
 ```text
 bytesPerRow = ceil(width / 8)
 ```
 
-For this image:
+Para esta imagen:
 
 ```text
 bytesPerRow = 71
@@ -87,23 +86,23 @@ bytesPerRow = 71
 
 ---
 
-# Final result
+# Resultado final
 
-Both implementations must obtain:
+Ambas implementaciones deben obtener:
 
 ```text
-Area = 108660 square pixels
+Área = 108660 píxeles cuadrados
 ```
 
-This value was obtained by constructing the complete list of column heights `M` and calculating:
+Este valor se obtuvo construyendo la lista completa de alturas `M` y calculando:
 
 ```text
-Area = sum(M)
+Área = sum(M)
 ```
 
 ---
 
-# Repository structure
+# Estructura del repositorio
 
 ```text
 Practica-I-From-Pixels-to-Integral/
@@ -120,58 +119,58 @@ Practica-I-From-Pixels-to-Integral/
 
 ---
 
-# Haskell solution
+# Solución en Haskell
 
-## Functional approach
+## Enfoque funcional
 
-The central transformation is:
+La transformación principal es:
 
 ```haskell
 heights img = map (f img) [0 .. width img - 1]
 ```
 
-This creates:
+Esto crea:
 
 ```text
-domain → heights
+dominio → alturas
 ```
 
-Then:
+Después:
 
 ```haskell
 area = sum m
 ```
 
-creates:
+crea:
 
 ```text
-heights → area
+alturas → área
 ```
 
-Therefore, the complete functional transformation is:
+Por lo tanto, la transformación funcional completa es:
 
 ```text
-PBM → bytes → pixels → f(x) → M → area
+PBM → bytes → píxeles → f(x) → M → área
 ```
 
-## Requirements
+## Requisitos
 
-Recommended environment:
+Entorno recomendado:
 
-- GHC
-- GHCi or runghc
+* GHC
+* GHCi o runghc
 
-The program uses standard Haskell libraries including `Data.ByteString` and `Data.Bits`.
+El programa utiliza librerías estándar de Haskell, incluyendo `Data.ByteString` y `Data.Bits`.
 
-## Execution
+## Ejecución
 
-From the project root:
+Desde la carpeta principal del proyecto:
 
 ```bash
 runghc Haskell/Main.hs curva_binaria_P4.pbm
 ```
 
-Or:
+O:
 
 ```bash
 cd Haskell
@@ -180,23 +179,23 @@ runghc Main.hs ../curva_binaria_P4.pbm
 
 ---
 
-# Prolog solution
+# Solución en Prolog
 
-## Declarative approach
+## Enfoque declarativo
 
-The central relation is:
+La relación principal es:
 
 ```text
 f(X, Width, Height, BytesPerRow, Data, Altura)
 ```
 
-This describes the relationship between:
+Esta describe la relación entre:
 
-- a horizontal position `X`
-- the binary image
-- the column height `Altura`
+* una posición horizontal `X`
+* la imagen binaria
+* la altura de la columna `Altura`
 
-The list of heights is constructed declaratively using:
+La lista de alturas se construye de manera declarativa utilizando:
 
 ```prolog
 findall(
@@ -209,39 +208,39 @@ findall(
 ).
 ```
 
-Then the area is obtained with:
+Después, el área se obtiene con:
 
 ```prolog
 sum_list(M, Area).
 ```
 
-Therefore:
+Por lo tanto:
 
 ```text
-relations → values satisfying f(x) → M → area
+relaciones → valores que cumplen f(x) → M → área
 ```
 
-## Requirements
+## Requisitos
 
-Recommended environment:
+Entorno recomendado:
 
-- SWI-Prolog
+* SWI-Prolog
 
-## Execution
+## Ejecución
 
-From the project root:
+Desde la carpeta principal del proyecto:
 
 ```bash
 swipl -q -s Prolog/main.pl -g "main('curva_binaria_P4.pbm')" -t halt
 ```
 
-Or interactively:
+O de manera interactiva:
 
 ```bash
 swipl
 ```
 
-Then:
+Luego:
 
 ```prolog
 ?- ['Prolog/main.pl'].
@@ -250,83 +249,83 @@ Then:
 
 ---
 
-# Console visualization strategy
+# Estrategia de visualización en consola
 
-The original image is larger than a typical terminal window.
+La imagen original es más grande que una ventana de terminal típica.
 
-For that reason, both programs use spatial compression.
+Por esta razón, ambos programas utilizan compresión espacial.
 
-## Original image visualization
+## Visualización de la imagen original
 
-The image is divided into blocks.
+La imagen se divide en bloques.
 
-For each block:
-
-```text
-if at least one pixel is black → print █
-otherwise → print space
-```
-
-The maximum target size is approximately:
+Para cada bloque:
 
 ```text
-100 columns × 35 rows
+si al menos un píxel es negro → se imprime █
+de lo contrario → se imprime un espacio
 ```
 
-The sampling factors are calculated from the original dimensions.
+El tamaño máximo aproximado es:
 
-This preserves the general shape of the curve while making it visible in the console.
+```text
+100 columnas × 35 filas
+```
 
-## Height function visualization
+Los factores de reducción se calculan a partir de las dimensiones originales.
 
-The list `M` is compressed horizontally.
+Esto permite conservar la forma general de la curva mientras se puede visualizar en la consola.
 
-Several consecutive heights are grouped and represented by their maximum value. The resulting values are then scaled vertically to approximately 25 terminal rows.
+## Visualización de la función de alturas
 
-Unicode block characters are used:
+La lista `M` se comprime horizontalmente.
+
+Varias alturas consecutivas se agrupan y se representan mediante su valor máximo. Los valores resultantes se escalan verticalmente para ocupar aproximadamente 25 filas de la terminal.
+
+Se utilizan caracteres de bloque Unicode:
 
 ```text
 █
 ```
 
-This makes the variations of `f(x)` visible without requiring a graphical interface.
+Esto permite visualizar las variaciones de `f(x)` sin necesidad de utilizar una interfaz gráfica.
 
 ---
 
-# Sample values
+# Valores de muestra
 
-Both programs display at least 10 values distributed across the domain in the form:
+Ambos programas muestran al menos 10 valores distribuidos a lo largo del dominio con el siguiente formato:
 
 ```text
-x = ... -> f(x) = ... pixels
+x = ... -> f(x) = ... píxeles
 ```
 
-The positions are selected across the width of the image.
+Las posiciones se seleccionan a lo largo del ancho de la imagen.
 
 ---
 
-# Comparison of paradigms
+# Comparación de paradigmas
 
 ## Haskell
 
-The Haskell implementation emphasizes transformations of data:
+La implementación en Haskell enfatiza las transformaciones de datos:
 
 ```text
-domain
+dominio
   ↓ map f
 M
   ↓ sum
-area
+área
 ```
 
-The key idea is that the height structure is created by applying the same function to every value of the domain.
+La idea principal es que la estructura de alturas se crea aplicando la misma función a cada valor del dominio.
 
 ## Prolog
 
-The Prolog implementation emphasizes logical relationships:
+La implementación en Prolog enfatiza las relaciones lógicas:
 
 ```text
-X + image → Altura satisfying f(X)
+X + imagen → Altura que cumple f(X)
              ↓
           findall
              ↓
@@ -334,73 +333,58 @@ X + image → Altura satisfying f(X)
              ↓
           sum_list
              ↓
-            Area
+            Área
 ```
 
-Instead of describing a sequence of instructions, the predicates describe the relationships that must hold between a position, the image and its height.
+En lugar de describir una secuencia de instrucciones, los predicados describen las relaciones que deben cumplirse entre una posición, la imagen y su altura.
 
 ---
 
-# Verification
+# Verificación
 
-The supplied PBM file is read directly by both implementations.
+El archivo PBM proporcionado es leído directamente por ambas implementaciones.
 
-The file is **not manually converted into a text matrix**.
+El archivo no se convierte manualmente en una matriz de texto.
 
-Both implementations:
+Ambas implementaciones:
 
-- Parse the PBM P4 header.
-- Process binary raster data.
-- Access pixels using bit operations.
-- Calculate consecutive black pixels from the bottom.
-- Construct `M`.
-- Calculate the area with a Riemann sum.
-- Visualize the source curve.
-- Visualize the height function.
-- Show sample values.
+* Analizan el encabezado PBM P4.
+* Procesan los datos binarios del raster.
+* Acceden a los píxeles utilizando operaciones de bits.
+* Calculan los píxeles negros consecutivos desde la parte inferior.
+* Construyen `M`.
+* Calculan el área mediante una suma de Riemann.
+* Visualizan la curva original.
+* Visualizan la función de alturas.
+* Muestran valores de muestra.
 
-Expected verification result:
+El resultado esperado de la verificación es:
 
 ```text
-Haskell Area = 108660 square pixels
-Prolog  Area = 108660 square pixels
+Área en Haskell = 108660 píxeles cuadrados
+Área en Prolog  = 108660 píxeles cuadrados
 ```
 
 ---
-
-# Suggested video presentation
-
-1. Show the repository and the original `curva_binaria_P4.pbm` file.
-2. Explain that PBM P4 stores pixels as bits.
-3. Execute the Haskell program.
-4. Show the compact image visualization.
-5. Show the height function visualization.
-6. Show sample values.
-7. Show the area: `108660`.
-8. Explain `map f` and `sum`.
-9. Execute the Prolog program.
-10. Show the same outputs and area.
-11. Explain the relation `f(...)`, `findall/3` and `sum_list/2`.
-12. Compare functional and declarative programming.
-13. Connect the final calculation with the Riemann sum:
+Relacionar el cálculo final con la suma de Riemann:
 
 ```text
-Area = Σ f(xᵢ)Δx
+Área = Σ f(xᵢ)Δx
 ```
 
-Since:
+Como:
 
 ```text
 Δx = 1
 ```
 
-then:
+entonces:
 
 ```text
-Area = Σ f(xᵢ)
+Área = Σ f(xᵢ)
 ```
 
-which is exactly:
+lo cual es exactamente:
 
 ```text
 sum(M)
