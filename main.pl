@@ -45,7 +45,7 @@ read_pbm(File, Width, Height, BytesPerRow, Data) :-
 
 parse_header(Codes0, Width, Height, Raster) :-
     read_token(Codes0, Magic, Codes1),
-    Magic = "P4",
+    ( Magic = "P4" ; Magic = [80, 52] ), !,
     read_token(Codes1, WidthCodes, Codes2),
     read_token(Codes2, HeightCodes, Codes3),
     number_codes(Width, WidthCodes),
@@ -90,9 +90,9 @@ skip_one_separator(Codes, Codes).
 
 pixel(X, Y, Width, Height, BytesPerRow, Data, Pixel) :-
     MaxX is Width - 1,
-    between(0, MaxX, X)
+    between(0, MaxX, X),
     MaxY is Height - 1,
-    between(0, MaxY, Y)
+    between(0, MaxY, Y),
     ByteIndex is Y * BytesPerRow + X // 8,
     nth0(ByteIndex, Data, Byte),
     Bit is 7 - (X mod 8),
@@ -138,16 +138,21 @@ draw_image(Width, Height, BytesPerRow, Data, MaxW, MaxH) :-
     SX is max(1, (Width + MaxW - 1) // MaxW),
     SY is max(1, (Height + MaxH - 1) // MaxH),
     MaxY is Height - 1,
-    between_step(0, MaxY, SY, Y),
+    draw_image_rows(0, MaxY, SY, Width, SX, Height, BytesPerRow, Data).
+
+draw_image_rows(Y, MaxY, _, _, _, _, _, _) :-
+    Y > MaxY, !, nl.
+draw_image_rows(Y, MaxY, SY, Width, SX, Height, BytesPerRow, Data) :-
+    Y =< MaxY,
     draw_image_row(0, Width, SX, Y, SY, Width, Height, BytesPerRow, Data),
     nl,
-    fail.
-draw_image(_, _, _, _, _, _) :- true.
+    NextY is Y + SY,
+    draw_image_rows(NextY, MaxY, SY, Width, SX, Height, BytesPerRow, Data).
 
 draw_image_row(X, Width, _, _, _, _, _, _, _) :-
     X >= Width, !.
 draw_image_row(X, Width, SX, Y, SY, ImgW, ImgH, BytesPerRow, Data) :-
-    block_black(X, Y, SX, SY, ImgW, ImgH, BytesPerRow, Data),
+    block_black(X, Y, SX, SY, ImgW, ImgH, BytesPerRow, Data), !,
     write('█'),
     X2 is X + SX,
     draw_image_row(X2, Width, SX, Y, SY, ImgW, ImgH, BytesPerRow, Data).
