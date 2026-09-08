@@ -1,8 +1,3 @@
-/* ============================================================
-   PRACTICE I - FROM PIXELS TO THE INTEGRAL
-   Prolog solution (SWI-Prolog)
-   ============================================================ */
-
 :- use_module(library(readutil)).
 :- use_module(library(lists)).
 
@@ -94,8 +89,10 @@ skip_one_separator(Codes, Codes).
    ----------------------------------------------------------------- */
 
 pixel(X, Y, Width, Height, BytesPerRow, Data, Pixel) :-
-    between(0, Width - 1, X),
-    between(0, Height - 1, Y),
+    MaxX is Width - 1,
+    between(0, MaxX, X)
+    MaxY is Height - 1,
+    between(0, MaxY, Y)
     ByteIndex is Y * BytesPerRow + X // 8,
     nth0(ByteIndex, Data, Byte),
     Bit is 7 - (X mod 8),
@@ -145,7 +142,7 @@ draw_image(Width, Height, BytesPerRow, Data, MaxW, MaxH) :-
     draw_image_row(0, Width, SX, Y, SY, Width, Height, BytesPerRow, Data),
     nl,
     fail.
-draw_image(_, _, _, _, _, _, _, _, _, _) :- true.
+draw_image(_, _, _, _, _, _) :- true.
 
 draw_image_row(X, Width, _, _, _, _, _, _, _) :-
     X >= Width, !.
