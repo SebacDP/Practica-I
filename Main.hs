@@ -3,7 +3,6 @@ module Main where
 import qualified Data.ByteString as BS
 import Data.Bits (testBit)
 import Data.Char (chr, isSpace)
-import Data.List (find)
 import System.Environment (getArgs)
 import Text.Read (readMaybe)
 
